@@ -1,5 +1,6 @@
 import tkinter as tk
 
+
 class Todo(tk.Tk):
     def __init__(self, tasks=None):
         super().__init__()
@@ -9,10 +10,30 @@ class Todo(tk.Tk):
         else:
             self.tasks = tasks
 
+        self.tasks_canvas = tk.Canvas(self)
+
+        self.tasks_frame = tk.Frame(self.tasks_canvas)
+        self.text_frame = tk.Frame(self)
+
+        self.scrollbar = tk.Scrollbar(
+            self.tasks_canvas, orient="vertical", command=self.tasks_canvas.yview
+        )
+
+        self.tasks_canvas.configure(yscrollcommand=self.scrollbar.set)
+
         self.title("To-Do App v1")
         self.geometry("300x400")
 
-        todo1 = tk.Label(self, text="--- Add Items Here ---", bg="lightgrey", fg="black", pady=10)
+        self.tasks_canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.canvas_frame = self.tasks_canvas.create_window(
+            (0, 0), window=self.tasks_frame, anchor="n"
+        )
+
+        todo1 = tk.Label(
+            self, text="--- Add Items Here ---", bg="lightgrey", fg="black", pady=10
+        )
 
         self.tasks.append(todo1)
 
@@ -20,16 +41,24 @@ class Todo(tk.Tk):
             task.pack(side=tk.TOP, fill=tk.X)
 
         self.task_create = tk.Text(self, height=3, bg="white", fg="black")
-
         self.task_create.pack(side=tk.BOTTOM, fill=tk.X)
+        self.text_frame.pack(side=tk.BOTTOM, fill=tk.X)
         self.task_create.focus_set()
 
         self.bind("<Return>", self.add_task)
+        # self.bind("<Configure>", self.on_frame_configure)
+        # self.bind_all("<MouseWheel>", self.mouse_scroll)
+        # self.bind_all("<Button-4>", self.mouse_scroll)
+        # self.bind_all("<Button-5>", self.mouse_scroll)
+        # self.tasks_canvas.bind("<Configure>", self.task_width)
 
-        self.colour_schemes = [{"bg": "lightgrey", "fg": "black"}, {"bg": "grey", "fg": "white"}]
+        self.colour_schemes = [
+            {"bg": "lightgrey", "fg": "black"},
+            {"bg": "grey", "fg": "white"},
+        ]
 
     def add_task(self, event=None):
-        task_text = self.task_create.get(1.0,tk.END).strip()
+        task_text = self.task_create.get(1.0, tk.END).strip()
 
         if len(task_text) > 0:
             new_task = tk.Label(self, text=task_text, pady=10)
@@ -46,6 +75,7 @@ class Todo(tk.Tk):
             self.tasks.append(new_task)
 
         self.task_create.delete(1.0, tk.END)
+
 
 if __name__ == "__main__":
     todo = Todo()
