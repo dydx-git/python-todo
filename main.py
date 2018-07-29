@@ -19,6 +19,5 @@ if __name__ == "__main__":
         print("File not present")
     else:
         print("File is present")
-    count = 0
     main = Main()
     main.mainloop()
