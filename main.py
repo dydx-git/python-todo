@@ -1,5 +1,7 @@
 # from abc import ABC, abstractmethod
 import tkinter as tk
+
+# from tkinter import ttk
 import os
 from layout import Layout
 from database import Database
@@ -17,5 +19,6 @@ if __name__ == "__main__":
         print("File not present")
     else:
         print("File is present")
+    count = 0
     main = Main()
     main.mainloop()

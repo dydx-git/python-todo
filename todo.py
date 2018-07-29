@@ -28,7 +28,7 @@ class Todo(App):
 
             self.set_task_colour(len(self.tasks), new_task)
 
-            new_task.bind("<Button-1>", self.remove_task)
+            new_task.bind("<Button-1>", self.complete_task)
             new_task.pack(side=tk.TOP, fill=tk.X)
 
             self.tasks.append(new_task)
@@ -39,19 +39,18 @@ class Todo(App):
 
         self.task_create.delete(1.0, tk.END)
 
-    def remove_task(self, event):
+    def complete_task(self, event):
         db = Database()
         task = event.widget
-        if msg.askyesno("Really Delete?", "Delete " + task.cget("text") + "?"):
-            self.tasks.remove(event.widget)
+        self.tasks.remove(event.widget)
+        db.complete_task(task.cget("text"))
+        delete_task_query = "DELETE FROM tasks WHERE task=?"
+        delete_task_data = (task.cget("text"),)
+        db.runQuery(delete_task_query, delete_task_data)
 
-            delete_task_query = "DELETE FROM tasks WHERE task=?"
-            delete_task_data = (task.cget("text"),)
-            db.runQuery(delete_task_query, delete_task_data)
+        event.widget.destroy()
 
-            event.widget.destroy()
-
-            self.recolour_tasks()
+        self.recolour_tasks()
 
     def recolour_tasks(self):
         for index, task in enumerate(self.tasks):
