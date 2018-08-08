@@ -30,7 +30,9 @@ class Todo(App):
 
             new_task.bind("<Button-1>", self.complete_task)
             new_task.pack(side=tk.TOP, fill=tk.X)
-
+            del_btn = tk.Button(new_task, text="Delete")
+            del_btn.bind("<Button-1>", lambda event: self.delete_task(event, new_task))
+            del_btn.pack(side=tk.RIGHT)
             self.tasks.append(new_task)
 
             if not from_db:
@@ -38,6 +40,13 @@ class Todo(App):
                 db.save_task(task_text)
 
         self.task_create.delete(1.0, tk.END)
+
+    def delete_task(self, event, task):
+        db = Database()
+        delete_task_query = "DELETE FROM tasks WHERE task=?"
+        delete_task_data = (task.cget("text"),)
+        db.runQuery(delete_task_query, delete_task_data)
+        task.destroy()
 
     def complete_task(self, event):
         db = Database()
@@ -47,7 +56,6 @@ class Todo(App):
         delete_task_query = "DELETE FROM tasks WHERE task=?"
         delete_task_data = (task.cget("text"),)
         db.runQuery(delete_task_query, delete_task_data)
-
         event.widget.destroy()
 
         self.recolour_tasks()
