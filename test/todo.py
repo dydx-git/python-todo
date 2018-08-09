@@ -15,41 +15,27 @@ class Todo(App):
             self.tasks = tasks
 
         current_tasks = db.load_tasks()
+        completed_tasks = db.load_completed_tasks()
+        print(completed_tasks)
+        for task in completed_tasks:
+            c_task = task[0]
+            self.add_task(True, None, c_task, True)
         for task in current_tasks:
             task_text = task[0]
             self.add_task(False, None, task_text, True)
-        completed_tasks = db.load_completed_tasks()
-        for task in completed_tasks:
-            if task[0] == None:
-                pass
-            else:
-                task_text = task[0]
-                self.add_task(True, None, task_text, True)
-                print("````````````````` ", task_text, " `````````````````")
 
-    def add_task(self, isComplete=False, event=None, task_text=None, from_db=False):
-        if isComplete == True:
-            if len(task_text) > 0:
-                new_task = tk.Label(self.c_tasks, text=task_text, pady=10)
+    def add_task(self, isCompleted, event=None, task_text=None, from_db=False):
+        if isCompleted:
+            new_c_task = tk.Label(self.beta_frame, text=task_text, pady=10)
+            new_c_task.pack(side=tk.TOP, fill=tk.X)
+            self.set_task_colour(len(self.tasks), new_c_task)
 
-                self.set_task_colour(len(self.tasks), new_task)
-
-                new_task.bind("<Double-Button-1>", lambda event: self.delete_task(event, new_task))
-                new_task.pack(side=tk.TOP, fill=tk.X)
-                self.tasks.append(new_task)
-
-                if not from_db:
-                    db = Database()
-                    db.save_task(task_text)
         else:
             if not task_text:
                 task_text = self.task_create.get(1.0, tk.END).strip()
 
             if len(task_text) > 0:
                 new_task = tk.Label(self.tasks_frame, text=task_text, pady=10)
-
-                self.set_task_colour(len(self.tasks), new_task)
-
                 new_task.bind("<Button-1>", self.complete_task)
                 new_task.pack(side=tk.TOP, fill=tk.X)
                 del_btn = tk.Button(new_task, text="Delete")
@@ -79,8 +65,11 @@ class Todo(App):
         delete_task_data = (task.cget("text"),)
         db.runQuery(delete_task_query, delete_task_data)
         event.widget.destroy()
-
         self.recolour_tasks()
+
+        # verynew_task=tk.Label(self.ComepletedTask_frame, pady=10)
+
+    # verynew_task.pack(side=tk.TOP, fill=tk.X)
 
     def recolour_tasks(self):
         for index, task in enumerate(self.tasks):
