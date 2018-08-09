@@ -13,7 +13,7 @@ class App(tk.Tk):
         # Create main tasks frame
         self.main_frame = tk.Frame(self.nb)
         self.done_frame = tk.Frame(self.nb)
-        self.pomo_frame = tk.Frame(self.nb)
+        self.pomo_frame = tk.Frame(self.nb, width=500, height=300, bg="lightgrey")
 
         # Create and pack text and tasks frame
         self.text_frame = tk.Frame(self.main_frame)
@@ -39,7 +39,7 @@ class App(tk.Tk):
         # Add pages to notebook
         self.nb.add(self.main_frame, text="Tasks")
         self.nb.add(self.done_frame, text="Completed Tasks")
-        self.nb.add(self.pomo_frame, text="Completed Tasks")
+        self.nb.add(self.pomo_frame, text="Pomodoro")
 
         self.canvas_frame = self.tasks_canvas.create_window(
             (0, 0), window=self.tasks_frame, anchor="n"

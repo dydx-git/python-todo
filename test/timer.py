@@ -7,8 +7,6 @@ import functools
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as msg
-from app import App
-
 
 class CountingThread(threading.Thread):
     def __init__(self, master, start_time, end_time):
@@ -60,7 +58,7 @@ class LogWindow(tk.Toplevel):
         self.tab_trees = {}
 
         style = ttk.Style()
-        style.configure("Treeview", font=(None, 12))
+        style.configure("Treeview", font=(None,12))
         style.configure("Treeview.Heading", font=(None, 14))
 
         dates = self.master.get_unique_dates()
@@ -115,8 +113,7 @@ class LogWindow(tk.Toplevel):
             self.master.delete_task(task_name, task_date)
             tree.delete(selected_item_id)
 
-
-class Timer(App):
+class Timer(tk.Tk):
     def __init__(self):
         super().__init__()
 
@@ -125,51 +122,35 @@ class Timer(App):
         self.resizable(False, False)
 
         style = ttk.Style()
-        style.configure(
-            "TLabel", foreground="black", background="lightgrey", font=(None, 16), anchor="center"
-        )
+        style.configure("TLabel", foreground="black", background="lightgrey", font=(None, 16), anchor="center")
         style.configure("B.TLabel", font=(None, 40))
-        style.configure(
-            "B.TButton",
-            foreground="black",
-            background="lightgrey",
-            font=(None, 16),
-            anchor="center",
-        )
+        style.configure("B.TButton", foreground="black", background="lightgrey", font=(None, 16), anchor="center")
         style.configure("TEntry", foregound="black", background="white")
 
         self.menubar = tk.Menu(self, bg="lightgrey", fg="black")
 
         self.log_menu = tk.Menu(self.menubar, tearoff=0, bg="lightgrey", fg="black")
-        self.log_menu.add_command(
-            label="View Log", command=self.show_log_window, accelerator="Ctrl+L"
-        )
+        self.log_menu.add_command(label="View Log", command=self.show_log_window, accelerator="Ctrl+L")
 
         self.menubar.add_cascade(label="Log", menu=self.log_menu)
         self.configure(menu=self.menubar)
 
-        self.main_frame = tk.Frame(self.pomo_frame, width=500, height=300, bg="lightgrey")
+        self.main_frame = tk.Frame(self, width=500, height=300, bg="lightgrey")
 
         self.task_name_label = ttk.Label(self.main_frame, text="Task Name:")
         self.task_name_entry = ttk.Entry(self.main_frame, font=(None, 16))
-        self.start_button = ttk.Button(
-            self.main_frame, text="Start", command=self.start, style="B.TButton"
-        )
+        self.start_button = ttk.Button(self.main_frame, text="Start", command=self.start, style="B.TButton")
         self.time_remaining_var = tk.StringVar(self.main_frame)
         self.time_remaining_var.set("25:00")
-        self.time_remaining_label = ttk.Label(
-            self.main_frame, textvar=self.time_remaining_var, style="B.TLabel"
-        )
-        self.pause_button = ttk.Button(
-            self.main_frame, text="Pause", command=self.pause, state="disabled", style="B.TButton"
-        )
+        self.time_remaining_label = ttk.Label(self.main_frame, textvar=self.time_remaining_var, style="B.TLabel")
+        self.pause_button = ttk.Button(self.main_frame, text="Pause", command=self.pause, state="disabled", style="B.TButton")
 
         self.main_frame.pack(fill=tk.BOTH, expand=1)
 
         self.task_name_label.pack(fill=tk.X, pady=15)
-        self.task_name_entry.pack(fill=tk.X, padx=50, pady=(0, 20))
+        self.task_name_entry.pack(fill=tk.X, padx=50, pady=(0,20))
         self.start_button.pack(fill=tk.X, padx=50)
-        self.time_remaining_label.pack(fill=tk.X, pady=15)
+        self.time_remaining_label.pack(fill=tk.X ,pady=15)
         self.pause_button.pack(fill=tk.X, padx=50)
 
         self.bind("<Control-l>", self.show_log_window)
@@ -181,7 +162,7 @@ class Timer(App):
     def setup_worker(self):
         now = datetime.datetime.now()
         in_25_mins = now + datetime.timedelta(minutes=25)
-        # in_25_mins = now + datetime.timedelta(seconds=2)
+        #in_25_mins = now + datetime.timedelta(seconds=2)
         worker = CountingThread(self, now, in_25_mins)
         self.worker = worker
 
@@ -213,9 +194,7 @@ class Timer(App):
         else:
             self.pause_button.configure(text="Pause")
             end_timedelta = datetime.datetime.now() - self.worker.start_time
-            self.worker.end_time = self.worker.end_time + datetime.timedelta(
-                seconds=end_timedelta.seconds
-            )
+            self.worker.end_time = self.worker.end_time + datetime.timedelta(seconds=end_timedelta.seconds)
 
     def finish_early(self):
         self.start_button.configure(text="Start", command=self.start)
@@ -308,3 +287,12 @@ class Timer(App):
     def firstTimeDB():
         create_tables = "CREATE TABLE pymodoros (task text, finished integer, date text)"
         Timer.runQuery(create_tables)
+
+
+if __name__ == "__main__":
+    timer = Timer()
+
+    if not os.path.isfile("pymodoro.db"):
+        timer.firstTimeDB()
+
+    timer.mainloop()
