@@ -24,7 +24,7 @@ class App(tk.Tk):
         # Create Canvas and config
         self.tasks_canvas = tk.Canvas(self.true_frame)
         self.tasks_frame = tk.Frame(self.tasks_canvas)
-        self.scrollbar = tk.Scrollbar(self.tasks_canvas, orient=tk.VERTICAL)
+        self.scrollbar = tk.Scrollbar(self.true_frame, orient=tk.VERTICAL)
         self.tasks_frame.pack(side=tk.LEFT, fill=tk.X)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.scrollbar.config(command=self.tasks_canvas.yview)
