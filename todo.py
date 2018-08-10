@@ -2,6 +2,7 @@ from app import App
 from database import Database
 import tkinter as tk
 import tkinter.messagebox as msg
+from timer import Timer
 
 
 class Todo(App):
@@ -14,6 +15,7 @@ class Todo(App):
         else:
             self.tasks = tasks
 
+        self.task_name_entry.insert(0, "No Task Selected")
         current_tasks = db.load_tasks()
         for task in current_tasks:
             task_text = task[0]
@@ -25,7 +27,6 @@ class Todo(App):
             else:
                 task_text = task[0]
                 self.add_task(True, None, task_text, True)
-                print("````````````````` ", task_text, " `````````````````")
 
     def add_task(self, isComplete=False, event=None, task_text=None, from_db=False):
         if isComplete == True:
@@ -50,11 +51,12 @@ class Todo(App):
 
                 self.set_task_colour(len(self.tasks), new_task)
 
-                new_task.bind("<Button-1>", self.complete_task)
-                new_task.pack(side=tk.TOP, fill=tk.X)
+                new_task.bind("<Double-Button-1>", self.complete_task)
+                new_task.bind("<Button-1>", self.pass_task)
+                new_task.pack(side=tk.TOP, fill=tk.BOTH)
                 del_btn = tk.Button(new_task, text="Delete")
                 del_btn.bind("<Button-1>", lambda event: self.delete_task(event, new_task))
-                del_btn.pack(side=tk.RIGHT)
+                del_btn.pack(side=tk.RIGHT, padx=15)
                 self.tasks.append(new_task)
 
                 if not from_db:
@@ -62,6 +64,12 @@ class Todo(App):
                     db.save_task(task_text)
 
             self.task_create.delete(1.0, tk.END)
+
+    def pass_task(self, event):
+        self.task_name_entry.config(state=tk.NORMAL)
+        self.task_name_entry.delete(0, "end")
+        self.task_name_entry.insert(0, event.widget.cget("text"))
+        self.task_name_entry.config(state="readonly")
 
     def delete_task(self, event, task):
         db = Database()

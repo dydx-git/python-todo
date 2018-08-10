@@ -120,10 +120,6 @@ class Timer(App):
     def __init__(self):
         super().__init__()
 
-        self.title("Pomodoro Timer")
-        self.geometry("500x300")
-        self.resizable(False, False)
-
         style = ttk.Style()
         style.configure(
             "TLabel", foreground="black", background="lightgrey", font=(None, 16), anchor="center"
@@ -151,7 +147,9 @@ class Timer(App):
         self.main_frame = tk.Frame(self.pomo_frame, width=500, height=300, bg="lightgrey")
 
         self.task_name_label = ttk.Label(self.main_frame, text="Task Name:")
-        self.task_name_entry = ttk.Entry(self.main_frame, font=(None, 16))
+        self.task_name_entry = ttk.Entry(
+            self.main_frame, font=(None, 16), state="readonly", justify="center"
+        )
         self.start_button = ttk.Button(
             self.main_frame, text="Start", command=self.start, style="B.TButton"
         )

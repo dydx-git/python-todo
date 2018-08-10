@@ -23,4 +23,5 @@ if __name__ == "__main__":
     else:
         print("File is present")
     main = Main()
+    main.geometry("380x450")
     main.mainloop()

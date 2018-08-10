@@ -7,13 +7,13 @@ class App(tk.Tk):
         super().__init__()
 
         # Create and pack Notebook
-        self.nb = ttk.Notebook(self)
+        self.nb = ttk.Notebook(self, width=450, height=600)
         self.nb.pack(expand=True, fill=tk.BOTH)
 
         # Create main tasks frame
         self.main_frame = tk.Frame(self.nb)
         self.done_frame = tk.Frame(self.nb)
-        self.pomo_frame = tk.Frame(self.nb, width=500, height=300, bg="lightgrey")
+        self.pomo_frame = tk.Frame(self.nb, bg="lightgrey")
 
         # Create and pack text and tasks frame
         self.text_frame = tk.Frame(self.main_frame)
@@ -24,7 +24,8 @@ class App(tk.Tk):
         # Create Canvas and config
         self.tasks_canvas = tk.Canvas(self.true_frame)
         self.tasks_frame = tk.Frame(self.tasks_canvas)
-        self.scrollbar = tk.Scrollbar(self.tasks_frame, orient=tk.VERTICAL)
+        self.scrollbar = tk.Scrollbar(self.tasks_canvas, orient=tk.VERTICAL)
+        self.tasks_frame.pack(side=tk.LEFT, fill=tk.X)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.scrollbar.config(command=self.tasks_canvas.yview)
         self.tasks_canvas.config(yscrollcommand=self.scrollbar.set)
